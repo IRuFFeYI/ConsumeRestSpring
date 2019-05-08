@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phonebook</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/custom.css" />
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Vorname</th>
+                <th scope="col">Nachname</th>
+                <th scope="col">Telefon</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+
+            <tr th:each="entry : ${phonebook}">
+                <td th:text="${entry.prename}" />
+                <td th:text="${entry.name}" />
+                <td th:text="${entry.phoneNumber}" />
+                <td>
+                    <form method="post" th:action="@{/deleteEntry/}+${entry.id}">
+                        <button class="btn btn-primary" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="row">
+        <form th:action="@{/createEntry}" th:object="${entry}" method="post">
+            <div class="form-group">
+                <label for="inputVorname">Vorname</label>
+                <input type="text" class="form-control" id="inputVorname" placeholder="Vorname" th:field="*{prename}">
+            </div>
+            <div class="form-group">
+                <label for="inputNachname">Nachname</label>
+                <input type="text" class="form-control" id="inputNachname" placeholder="Nachname" th:field="*{name}">
+            </div>
+            <div class="form-group">
+                <label for="inputTelefon">Telefonnummer</label>
+                <input type="text" class="form-control" id="inputTelefon" placeholder="Vorname" th:field="*{phoneNumber}">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
