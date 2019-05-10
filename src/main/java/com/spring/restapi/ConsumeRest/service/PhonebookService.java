@@ -47,6 +47,13 @@ public class PhonebookService {
         return result;
     }
 
+    public void changeEntry(PhonebookEntry entry)
+    {
+        final String uri = "http://localhost:8081/api/v1/phonebook";
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put( uri, entry);
+    }
+
     public void deleteEntry(int id)
     {
         final String uri = "http://localhost:8081/api/v1/phonebook/"+id;
