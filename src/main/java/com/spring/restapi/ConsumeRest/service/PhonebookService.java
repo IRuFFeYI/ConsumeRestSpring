@@ -2,19 +2,21 @@ package com.spring.restapi.ConsumeRest.service;
 
 import com.spring.restapi.ConsumeRest.model.PhonebookEntry;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 @Service
 public class PhonebookService {
 
+    final String baseUri = "http://localhost:8081/api/v1/phonebookentries/";
+
     public PhonebookEntry getEntryById(int id)
     {
-        final String uri = "http://localhost:8081/api/v1/phonebook/" + id;
+        String uri = baseUri + id;
         RestTemplate restTemplate = new RestTemplate();
 
         PhonebookEntry result = restTemplate.getForObject(uri, PhonebookEntry.class);
@@ -25,7 +27,7 @@ public class PhonebookService {
     {
         List<PhonebookEntry> result = null;
 
-        final String uri = "http://localhost:8081/api/v1/phonebook";
+        String uri = baseUri;
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<List<PhonebookEntry>> response = restTemplate.exchange(
                 uri,
@@ -38,12 +40,24 @@ public class PhonebookService {
         return result;
     }
 
-    public PhonebookEntry createEntry(PhonebookEntry entry)
+    public URI createEntry(PhonebookEntry entry)
     {
-        final String uri = "http://localhost:8081/api/v1/phonebook";
+        final String uri = baseUri;
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        requestHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        HttpEntity<PhonebookEntry> requestEntity = new HttpEntity<>(entry, requestHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
-        PhonebookEntry result = restTemplate.postForObject( uri, entry, PhonebookEntry.class);
+        ResponseEntity response = restTemplate.exchange(
+                uri,
+                HttpMethod.POST,
+                requestEntity,
+                ResponseEntity.class);
+        URI result = response.getHeaders().getLocation();
+
         return result;
     }
 
@@ -56,7 +70,7 @@ public class PhonebookService {
 
     public void deleteEntry(int id)
     {
-        final String uri = "http://localhost:8081/api/v1/phonebook/"+id;
+        final String uri = baseUri+id;
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.delete(uri);
 
